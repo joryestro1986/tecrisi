@@ -23,7 +23,8 @@ if ($_SESSION['cxcobrar']==1)
               <div class="col-md-12">
                   <div class="box">
                     <div class="box-header with-border">
-                          <h1 class="box-title">Venta <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true)"><i class="fa fa-plus-circle"></i> Agregar</button> <a href="../reportes/rptventas.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a></h1>
+                          <h1 class="box-title">Cuentas por Cobrar
+						  <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true)"><i class="fa fa-plus-circle"></i> Agregar</button> <a href="../reportes/rptventas.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a></h1>
                         <div class="box-tools pull-right">
                         </div>
                     </div>
@@ -57,63 +58,68 @@ if ($_SESSION['cxcobrar']==1)
                     </div>
                     <div class="panel-body" style="height: 100%;" id="formularioregistros">
                         <form name="formulario" id="formulario" method="POST">
-                          <div class="form-group col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                            <label>Cliente(*):</label>
-                            <input type="hidden" name="idventa" id="idventa">
-                            <select id="idcliente" name="idcliente" class="form-control selectpicker" data-live-search="true" required>
-                             </select>
-                          </div>
-                          <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                            <label>Fecha(*):</label>
-                            <input type="date" class="form-control" name="fecha_hora" id="fecha_hora" required="">
-                          </div>
-                          <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <label>Tipo Comprobante(*):</label>
-                            <select name="tipo_comprobante" id="tipo_comprobante" class="form-control selectpicker" required="">
-                               <option value="Factura">Factura</option>
-                               <option value="Ticket">Ticket</option>
-							    <option value="Boleta">Boleta</option>
-                            </select>
-                          </div>
-                          <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                            <label>Serie:</label>
-                            <input type="text" size="90"  align="center" class="form-control" name="serie_comprobante" id="serie_comprobante" maxlength="50" placeholder="Serie">
-                          </div>
-                          <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                            <label>Subtotal:</label>
-                            <input type="number" class="form-control" name="num_comprobante" id="num_comprobante" maxlength="10" placeholder="Número   10.0" required="" pattern="^[0-9]+([,]?[0-9]+)*$" >
-                          </div>
-                          <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                            <label>Impuesto:</label>
-                            <input type="number" class="form-control" name="impuesto" id="impuesto" required="">
-                          </div>
-						  <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                            <label>ISR:</label>
-                            <input type="number" class="form-control" name="impuesto" id="impuesto" required="">
-                          </div>
-						   <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                            <label>TOTAL:</label>
-                            <input type="number" class="form-control" name="impuesto" id="impuesto" required="">
-                          </div>
-						    <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                            
-							
-							<div style="z-index:0; position: absolute; top: 0;  left: 8px;   
-							height: 45px; width: 353px;border:1px dashed red;">
-								<label disabled="disabled" control-type="TIssLabel" id="7662"   
-								name="IssLabel29" style=" font-weight: bold;background-color:#fe0;">Si deseas agregar una descripcion mas detallada del detalle favor de anexarlo!
-								</label>
-								<div>
-		<label>Observaciones:</label>					
-                            <textarea name="observacion" type="text" class="form-control"  id="observacion" required=""></textarea>
-                          </div>
-						   </div>
-							</div>
-                          <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <button class="btn btn-primary" type="submit" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
+                        
+						
+						   <div class="row">
+                                <!-- Siniestro -->
+                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label>Siniestro(*):</label>
+                                    <select id="idcliente" name="idcliente" class="form-control selectpicker" data-live-search="true" required></select>
+                                </div>
 
-                            <button id="btnCancelar" class="btn btn-danger" onclick="cancelarform()" type="button"><i class="fa fa-arrow-circle-left"></i> Cancelar</button>
-                          </div>
+                                <!-- Fecha -->
+                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label>Fecha(*):</label>
+                                    <input type="datetime-local" class="form-control" name="fecha_hora" id="fecha_hora" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Banco -->
+                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label>Banco(*):</label>
+                                    <select name="tipo_comprobante" id="tipo_comprobante" class="form-control selectpicker" required>
+                                        <option value="Factura">Banorte</option>
+                                        <option value="Ticket">Citibanamex</option>
+                                        <option value="Boleta">BBVA</option>
+                                    </select>
+                                </div>
+
+                                <!-- Cliente (Siniestro) -->
+                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label>Cliente:</label>
+                                    <input type="text" class="form-control" name="siniestro" id="siniestro" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Serie -->
+                                <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <label>Serie:</label>
+                                    <input type="text" class="form-control" name="serie_comprobante" id="serie_comprobante">
+                                </div>
+
+                                <!-- Número -->
+                                <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <label>Número:</label>
+                                    <input type="text" class="form-control" name="num_comprobante" id="num_comprobante">
+                                </div>
+
+                                <!-- Impuesto -->
+                                <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                    <label>Impuesto:</label>
+                                    <input type="number" class="form-control" name="impuesto" id="impuesto" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Observaciones -->
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <label>Observaciones:</label>
+                                    <textarea name="observaciones" class="form-control" id="observaciones" rows="3"></textarea>
+                                </div>
+                            </div>				
+
 						  
                         </form>
                     </div>

@@ -140,22 +140,40 @@ if (strlen(session_id()) < 1)
             ?>
 
             <?php 
-            if ($_SESSION['ventas']==1)
+            if ($_SESSION['cxcobrar']==1)
             {
               echo '<li id="mVentas" class="treeview">
+              <a href="#">
+                <i class="fa fa-shopping-cart"></i>
+                <span>ceuntas por cobrar </span>
+                 <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li id="lVentas"><a href="cxcobrar.php"><i class="fa fa-circle-o"></i> Ventas</a></li>
+                				
+              </ul>
+            </li>';
+            }
+            ?>
+			
+			<?php 
+            if ($_SESSION['cxcobrar']==1)
+            {
+              echo '<li id="mCxcobrar" class="treeview">
               <a href="#">
                 <i class="fa fa-shopping-cart"></i>
                 <span>Ventas</span>
                  <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li id="lVentas"><a href="venta.php"><i class="fa fa-circle-o"></i> Ventas</a></li>
-                <li id="lClientes"><a href="cliente.php"><i class="fa fa-circle-o"></i> Clientes</a></li>
+                <li id="lVentas"><a href="Cxcobrar.php"><i class="fa fa-circle-o"></i> cobrar</a></li>
+              
 				
               </ul>
             </li>';
             }
             ?>
+			
                         
             <?php 
             if ($_SESSION['acceso']==1)
@@ -234,6 +252,10 @@ if (strlen(session_id()) < 1)
 			<ul class="treeview-menu">
                 <li id="lSiniestros"><a href="tragico.php"><i class="fa fa-circle-o"></i> Siniestro </a></li>
             </ul>
+				<ul class="treeview-menu">
+                <li id="lSiniestros"><a href="Montosiniestro.php"><i class="fa fa-circle-o"></i> Montos Siniestros </a></li>
+            </ul>
+			
 			<ul class="treeview-menu">
 			      <li id="lSiniestros"><a href="tragicostatus.php"><i class="fa fa-circle-o"></i> Estatus </a></li>
 			</ul>

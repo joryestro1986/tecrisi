@@ -1,0 +1,54 @@
+idstatus,$idsiniestro,$fechasta1,$observastatus1,$fechasta2,$observastatus2,$fechasta3,$observastatus3,$fechasta4,$observastatus4,$fechasta5,$observastatus5,$fechasta6,$observastatus6
+
+
+
+https://timosoft.wordpress.com/2021/04/22/obteniendo-el-primer-y-ultimo-dia-de-la-semana-en-mysql/
+
+
+https://es.w3hmong.com/mysql/func_mysql_weekday.htm
+
+
+
+
+
+
+Jorge Castillo
+jorge.castillo.siniestros@tecrisi.com
+
+josue.soto@tecrisi.com
+
+Adriana Mejia
+Adriana.Mejia@tecrisi.com
+
+Adriana Mejia
+Adriana.Mejia@tecrisi.com
+
+	
+Abril Rodriguez Almaguer
+abril.rodriguez@tecrisi.com
+
+jeovanna.martinez@tecrisi.com
+
+
+
+	
+Alicia Victoria
+alicia.victoria@tecrisi.com
+
+Ameyally Portillo Medina
+ameyally.portillo@tecrisi.com
+
+facturacion@tecrisi.com
+
+Karla Marcela Galván Marchén
+karla.galvan@tecrisi.com
+
+
+Mirna Najera
+Mirna.Najera@tecrisi.com
+
+
+Sinaí Gonzalez Quintana
+sinai.gonzalez@tecrisi.com
+
+ventas@tecrisi.com

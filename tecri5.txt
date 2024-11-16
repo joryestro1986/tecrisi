@@ -1,0 +1,686 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 10-11-2024 a las 22:33:19
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `tecri5`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `articulo`
+--
+
+CREATE TABLE `articulo` (
+  `idarticulo` int(11) NOT NULL,
+  `idcategoria` int(11) NOT NULL,
+  `codigo` varchar(50) DEFAULT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `stock` int(11) NOT NULL,
+  `descripcion` varchar(256) DEFAULT NULL,
+  `imagen` varchar(50) DEFAULT NULL,
+  `condicion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `articulo`
+--
+
+INSERT INTO `articulo` (`idarticulo`, `idcategoria`, `codigo`, `nombre`, `stock`, `descripcion`, `imagen`, `condicion`) VALUES
+(1, 1, '', 'video polarisado', 4999, 'vidrio de 3 mm', '1709581627.jpeg', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `aseguradora`
+--
+
+CREATE TABLE `aseguradora` (
+  `idseguradora` int(11) NOT NULL,
+  `nombreseg` varchar(80) NOT NULL,
+  `condicion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `aseguradora`
+--
+
+INSERT INTO `aseguradora` (`idseguradora`, `nombreseg`, `condicion`) VALUES
+(1, '', 1),
+(2, 'AGROASEMEX', 1),
+(3, 'ASEGURADORA SURA', 1),
+(4, 'GMX SEGUROS', 1),
+(5, 'SEGUROS AGROASEMEX', 1),
+(6, 'SEGUROS SURA', 1),
+(7, 'SURA', 1),
+(8, 'TORRE LOMAS', 1),
+(9, 'SEGUROS INBURSA', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categoria`
+--
+
+CREATE TABLE `categoria` (
+  `idcategoria` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `descripcion` varchar(256) DEFAULT NULL,
+  `condicion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `categoria`
+--
+
+INSERT INTO `categoria` (`idcategoria`, `nombre`, `descripcion`, `condicion`) VALUES
+(1, 'vidrio 3mm', 'grosos de 3mm', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_ingreso`
+--
+
+CREATE TABLE `detalle_ingreso` (
+  `iddetalle_ingreso` int(11) NOT NULL,
+  `idingreso` int(11) NOT NULL,
+  `idarticulo` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_compra` decimal(11,2) NOT NULL,
+  `precio_venta` decimal(11,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Disparadores `detalle_ingreso`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_updStockIngreso` AFTER INSERT ON `detalle_ingreso` FOR EACH ROW BEGIN
+ UPDATE articulo SET stock = stock + NEW.cantidad 
+ WHERE articulo.idarticulo = NEW.idarticulo;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_venta`
+--
+
+CREATE TABLE `detalle_venta` (
+  `iddetalle_venta` int(11) NOT NULL,
+  `idventa` int(11) NOT NULL,
+  `idarticulo` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_venta` decimal(11,2) NOT NULL,
+  `descuento` decimal(11,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`iddetalle_venta`, `idventa`, `idarticulo`, `cantidad`, `precio_venta`, `descuento`) VALUES
+(1, 3, 1, 1, 2000.00, 0.00);
+
+--
+-- Disparadores `detalle_venta`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_updStockVenta` AFTER INSERT ON `detalle_venta` FOR EACH ROW BEGIN
+ UPDATE articulo SET stock = stock - NEW.cantidad 
+ WHERE articulo.idarticulo = NEW.idarticulo;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ingreso`
+--
+
+CREATE TABLE `ingreso` (
+  `idingreso` int(11) NOT NULL,
+  `idproveedor` int(11) NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `tipo_comprobante` varchar(20) NOT NULL,
+  `serie_comprobante` varchar(7) DEFAULT NULL,
+  `num_comprobante` varchar(10) NOT NULL,
+  `fecha_hora` datetime NOT NULL,
+  `impuesto` decimal(4,2) NOT NULL,
+  `total_compra` decimal(11,2) NOT NULL,
+  `estado` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `permiso`
+--
+
+CREATE TABLE `permiso` (
+  `idpermiso` int(11) NOT NULL,
+  `nombre` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `permiso`
+--
+
+INSERT INTO `permiso` (`idpermiso`, `nombre`) VALUES
+(1, 'Escritorio'),
+(2, 'Almacen'),
+(3, 'Compras'),
+(4, 'Ventas'),
+(5, 'Acceso'),
+(6, 'Consulta Compras'),
+(7, 'Consulta Ventas'),
+(8, 'Cxcobrar'),
+(9, 'CXPagar'),
+(10, 'Siniestros'),
+(11, 'ConsultaClien');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `persona`
+--
+
+CREATE TABLE `persona` (
+  `idpersona` int(11) NOT NULL,
+  `tipo_persona` varchar(20) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `cp` varchar(5) DEFAULT NULL,
+  `rfc` varchar(20) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `direccion` varchar(1500) NOT NULL,
+  `idregfiscal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `persona`
+--
+
+INSERT INTO `persona` (`idpersona`, `tipo_persona`, `nombre`, `cp`, `rfc`, `telefono`, `email`, `direccion`, `idregfiscal`) VALUES
+(1, 'Cliente', 'video polarisado', '04265', 'sasd0321230', '5256232', 'portal@hotmail.com', '', 0),
+(2, 'Cliente', 'AGROASEMEX', '04425', 'AGROASEMEX52', '5256232', 'portal@hotmail.com', 'Valle de Tlahuac', 1),
+(3, 'Cliente', 'SEGURO GMX', '04425', 'gmx215113', '5256232', 'portal@hotmail.com', 'asdasdas', 1),
+(4, 'Cliente', 'SEGURO SURA', '04425', 'SURA262', '931742904', 'portal@hotmail.com', 'santa ana', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `regimenfiscal`
+--
+
+CREATE TABLE `regimenfiscal` (
+  `idregf` int(11) NOT NULL,
+  `idregfiscal` int(11) NOT NULL,
+  `descregf` varchar(256) DEFAULT NULL,
+  `condicion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `regimenfiscal`
+--
+
+INSERT INTO `regimenfiscal` (`idregf`, `idregfiscal`, `descregf`, `condicion`) VALUES
+(1, 601, 'General de Ley Personas Morales', 1),
+(2, 603, 'Personas Morales con Fines no Lucrativos', 1),
+(3, 605, 'Sueldos y Salarios e Ingresos Asimilados a Salarios', 1),
+(4, 606, 'Arrendamiento', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `statustragicos`
+--
+
+CREATE TABLE `statustragicos` (
+  `idstatus` int(11) NOT NULL,
+  `idsiniestro` int(11) NOT NULL,
+  `fechasta1` date NOT NULL,
+  `observastatus1` varchar(2000) DEFAULT NULL,
+  `fechasta2` date DEFAULT NULL,
+  `observastatus2` varchar(2000) DEFAULT NULL,
+  `fechasta3` date DEFAULT NULL,
+  `observastatus3` varchar(2000) DEFAULT NULL,
+  `fechasta4` date DEFAULT NULL,
+  `observastatus4` varchar(2000) DEFAULT NULL,
+  `fechasta5` date DEFAULT NULL,
+  `observastatus5` varchar(2000) DEFAULT NULL,
+  `fechasta6` date DEFAULT NULL,
+  `observastatus6` varchar(2000) DEFAULT NULL,
+  `fechacambio` datetime DEFAULT NULL,
+  `detallestatustragicos` varchar(2000) DEFAULT 'sta1-->cotizacion  sta2-->PROCESO sta3-->COLOCACION sta4-->FINIQUITO  sta5-->FACTURACION  sta6-->COBRO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `statustragicos`
+--
+
+INSERT INTO `statustragicos` (`idstatus`, `idsiniestro`, `fechasta1`, `observastatus1`, `fechasta2`, `observastatus2`, `fechasta3`, `observastatus3`, `fechasta4`, `observastatus4`, `fechasta5`, `observastatus5`, `fechasta6`, `observastatus6`, `fechacambio`, `detallestatustragicos`) VALUES
+(1, 1, '2024-01-03', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'sta1-->cotizacion sta2-->PROCESO sta3-->COLOCACION sta4-->FINIQUITO sta5-->FACTURACION sta6-->COBRO'),
+(2, 2, '2024-01-04', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'sta1-->cotizacion sta2-->PROCESO sta3-->COLOCACION sta4-->FINIQUITO sta5-->FACTURACION sta6-->COBRO'),
+(3, 3, '2024-01-03', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'sta1-->cotizacion sta2-->PROCESO sta3-->COLOCACION sta4-->FINIQUITO sta5-->FACTURACION sta6-->COBRO'),
+(4, 4, '2024-01-04', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'sta1-->cotizacion sta2-->PROCESO sta3-->COLOCACION sta4-->FINIQUITO sta5-->FACTURACION sta6-->COBRO'),
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tragico`
+--
+
+CREATE TABLE `tragico` (
+  `idmovint` int(11) NOT NULL,
+  `siniestro` varchar(50) NOT NULL,
+  `poliza` varchar(38) DEFAULT NULL,
+  `fechareporte` date DEFAULT NULL,
+  `fechasiniestro` date DEFAULT NULL,
+  `vigenciapoliza` date DEFAULT NULL,
+  `terminopoliza` date DEFAULT NULL,
+  `asegurado` varchar(500) DEFAULT NULL,
+  `reporta` varchar(200) DEFAULT NULL,
+  `atiendeasegurado` varchar(200) DEFAULT NULL,
+  `calle` varchar(500) DEFAULT NULL,
+  `colonia` varchar(250) DEFAULT NULL,
+  `alcandiamupio` varchar(150) DEFAULT NULL,
+  `estado` varchar(150) DEFAULT NULL,
+  `telefonot` varchar(300) DEFAULT NULL,
+  `correo` varchar(250) DEFAULT NULL,
+  `cristales` varchar(300) DEFAULT NULL,
+  `idseguradora` int(11) NOT NULL DEFAULT 0,
+  `atiende` varchar(150) DEFAULT NULL,
+  `fecharecepcion` date DEFAULT NULL,
+  `fechamedicion` date DEFAULT NULL,
+  `fechacotizacion` date DEFAULT NULL,
+  `fechaautorizacion` date DEFAULT NULL,
+  `fecharuta` date DEFAULT NULL,
+  `fechacolocacion` date DEFAULT NULL,
+  `fechafactura` date DEFAULT NULL,
+  `complementopago` varchar(600) DEFAULT NULL,
+  `deducible` varchar(250) DEFAULT NULL,
+  `estatus_siniestro` varchar(250) DEFAULT NULL,
+  `maestro_colocador` varchar(250) CHARACTER SET armscii8 COLLATE armscii8_general_ci DEFAULT NULL,
+  `observaciones` varchar(1500) DEFAULT NULL,
+  `analista` int(11) DEFAULT NULL,
+  `condicion` tinyint(4) NOT NULL,
+  `fechacreacion` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tragico`
+--
+
+INSERT INTO `tragico` (`idmovint`, `siniestro`, `poliza`, `fechareporte`, `fechasiniestro`, `vigenciapoliza`, `terminopoliza`, `asegurado`, `reporta`, `atiendeasegurado`, `calle`, `colonia`, `alcandiamupio`, `estado`, `telefonot`, `correo`, `cristales`, `idseguradora`, `atiende`, `fecharecepcion`, `fechamedicion`, `fechacotizacion`, `fechaautorizacion`, `fecharuta`, `fechacolocacion`, `fechafactura`, `complementopago`, `deducible`, `estatus_siniestro`, `maestro_colocador`, `observaciones`, `analista`, `condicion`, `fechacreacion`) VALUES
+(1, 'SHCP_P04_ISSSTE-00806/2023 ', 'P-SALUD-04/2023', '2024-01-03', '2023-12-28', NULL, NULL, 'INSTITUTO DE SEGURIDAD Y SERVICIOS SOCIALES DE LOS TRABAJADORES DEL ESTADO', 'YEZELL MEDINA', 'C.P. LAURA GABRIELA CASTAÑO VILLEGAS', 'CERRO DEL HORMIGUERO', 'ZONA CENTRO, C.P. 36000', 'GUANAJUATO', 'GUANAJUATO', '(462) 118-5229//(461)609-2166 EXT. 37459', NULL, 'ROTURA DE CRISTALES', 5, 'NAVAL', '2024-01-03', '2024-01-08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, '2024-06-17 11:00:51'),
+
+
+--
+-- Disparadores `tragico`
+--
+DELIMITER $$
+CREATE TRIGGER `tragicostatustragicosInOut` AFTER INSERT ON `tragico` FOR EACH ROW insert into statustragicos (fechasta1,idsiniestro,fechacambio) select CURDATE(),IDMOVINT, NOW() from tragico ORDER BY idmovint DESC limit 1
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `idusuario` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `tipo_documento` varchar(20) NOT NULL,
+  `num_documento` varchar(20) NOT NULL,
+  `direccion` varchar(70) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `cargo` varchar(20) DEFAULT NULL,
+  `login` varchar(20) NOT NULL,
+  `clave` varchar(64) NOT NULL,
+  `idseguradora` int(11) DEFAULT NULL,
+  `imagen` varchar(50) NOT NULL,
+  `condicion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`idusuario`, `nombre`, `tipo_documento`, `num_documento`, `direccion`, `telefono`, `email`, `cargo`, `login`, `clave`, `idseguradora`, `imagen`, `condicion`) VALUES
+(1, 'SISTEMAS', 'DNI', '47715777', 'santa ana', '931742904', '', 'sistemas', 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1, '1487132068.jpg', 1),
+(2, 'ALICIA VICTORIA DIAZ', 'DNI', '47715777', 'santa ana', '931742904', '', 'analistas', 'ALICIA', '1b18033d8286c4efc126b8a131e85db079c731aca276c9204b6221ca00fedbb0', NULL, '1487132068.jpg', 1),
+(3, 'AMEYALLY PORTILLO MEDINA', 'DNI', '47715777', 'santa ana', '931742904', '', 'analistas', 'AMEYALLI', '40614cd0ce8d5591fe8070ffaeb9724b3e0719c6c76a8cc1e58726a1593b6ce4', NULL, '1487132068.jpg', 1),
+(4, 'IAN GONZALEZ QUINTANA', 'DNI', '47715777', 'santa ana', '931742904', '', 'analistas', 'ianglez', 'e9b831a6b6ac34b76f5616535ee2b93420f6b1db8c7798228e4e9c2760dd4563', NULL, '1487132068.jpg', 1),
+(5, 'KARLA  XXX MMM', 'DNI', '47715777', 'santa ana', '931742904', '', 'analistas', 'KARLA', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', NULL, '1487132068.jpg', 1),
+(6, 'KATHERINE BARRAZA', 'DNI', '47715777', 'santa ana', '931742904', '', 'analistas', 'KATHE', 'bedae4fd749c4d1f342f069d97f4da192e788a4bf2351ea28a61861284837c50', NULL, '1487132068.jpg', 1),
+(7, 'SINAI GONZALEZ QUINTANA', 'DNI', '47715777', 'santa ana', '931742904', '', 'analistas', 'SINAI', '9de0e1e5243ee56fa37922a8b4820a358f70e330c281d9118f6f6c339da401c9', NULL, '1487132068.jpg', 1),
+(8, 'Indra Peralta', 'DNI', '24220', 'Valle Tlahuac', '712000212', 'indraperalta22@gmail.com', 'admin', 'indra', '5a5094e7cbd4c16af81f7c8ef9f0ce75427a31f6625def2df39031407153d315', NULL, '1717437169.png', 1),
+(9, 'AGRO', 'CEDULA', '1', 'santa ana', '931742904', '', 'AGRO', 'AGRO', 'c13d31876758ebba323eb7dafe835a622738c6f8c96d1be38a31725bb028013d', 2, '1719442856.JPG', 1),
+(10, 'ABRIL RODRIGUEZ ALMAGUER', 'DNI', '000', 'ESC NAVAL MILITAR 548', '413212', 'abril.rguez.tecrisi@gmail.com', 'Admin', 'abril', '6ee900af47c499d108014a0e762dbd98cf54d0d86f77639a235ee247e5c9d909', 1, '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario_permiso`
+--
+
+CREATE TABLE `usuario_permiso` (
+  `idusuario_permiso` int(11) NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `idpermiso` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `usuario_permiso`
+--
+
+INSERT INTO `usuario_permiso` (`idusuario_permiso`, `idusuario`, `idpermiso`) VALUES
+(158, 5, 1),
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta`
+--
+
+CREATE TABLE `venta` (
+  `idventa` int(11) NOT NULL,
+  `idcliente` int(11) NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `tipo_comprobante` varchar(20) NOT NULL,
+  `serie_comprobante` varchar(7) DEFAULT NULL,
+  `num_comprobante` varchar(10) NOT NULL,
+  `fecha_hora` datetime NOT NULL,
+  `impuesto` decimal(4,2) NOT NULL,
+  `total_venta` decimal(11,2) NOT NULL,
+  `estado` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Volcado de datos para la tabla `venta`
+--
+
+INSERT INTO `venta` (`idventa`, `idcliente`, `idusuario`, `tipo_comprobante`, `serie_comprobante`, `num_comprobante`, `fecha_hora`, `impuesto`, `total_venta`, `estado`) VALUES
+(1, 1, 7, '', NULL, '', '2024-04-17 21:47:36', 0.00, 0.00, ''),
+(2, 1, 7, '', NULL, '', '2024-04-17 21:47:36', 0.00, 0.00, ''),
+(3, 1, 1, 'Ticket', 'R', '4543', '2024-11-04 00:00:00', 0.00, 2000.00, 'Aceptado');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `articulo`
+--
+ALTER TABLE `articulo`
+  ADD PRIMARY KEY (`idarticulo`),
+  ADD UNIQUE KEY `nombre_UNIQUE` (`nombre`),
+  ADD KEY `fk_articulo_categoria_idx` (`idcategoria`);
+
+--
+-- Indices de la tabla `aseguradora`
+--
+ALTER TABLE `aseguradora`
+  ADD PRIMARY KEY (`idseguradora`),
+  ADD UNIQUE KEY `nombre_UNIQUE` (`nombreseg`);
+
+--
+-- Indices de la tabla `categoria`
+--
+ALTER TABLE `categoria`
+  ADD PRIMARY KEY (`idcategoria`),
+  ADD UNIQUE KEY `nombre_UNIQUE` (`nombre`);
+
+--
+-- Indices de la tabla `detalle_ingreso`
+--
+ALTER TABLE `detalle_ingreso`
+  ADD PRIMARY KEY (`iddetalle_ingreso`),
+  ADD KEY `fk_detalle_ingreso_ingreso_idx` (`idingreso`),
+  ADD KEY `fk_detalle_ingreso_articulo_idx` (`idarticulo`);
+
+--
+-- Indices de la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  ADD PRIMARY KEY (`iddetalle_venta`),
+  ADD KEY `fk_detalle_venta_venta_idx` (`idventa`),
+  ADD KEY `fk_detalle_venta_articulo_idx` (`idarticulo`);
+
+--
+-- Indices de la tabla `ingreso`
+--
+ALTER TABLE `ingreso`
+  ADD PRIMARY KEY (`idingreso`),
+  ADD KEY `fk_ingreso_persona_idx` (`idproveedor`),
+  ADD KEY `fk_ingreso_usuario_idx` (`idusuario`);
+
+--
+-- Indices de la tabla `permiso`
+--
+ALTER TABLE `permiso`
+  ADD PRIMARY KEY (`idpermiso`);
+
+--
+-- Indices de la tabla `persona`
+--
+ALTER TABLE `persona`
+  ADD PRIMARY KEY (`idpersona`);
+
+--
+-- Indices de la tabla `regimenfiscal`
+--
+ALTER TABLE `regimenfiscal`
+  ADD PRIMARY KEY (`idregf`),
+  ADD UNIQUE KEY `desc_UNIQUE` (`descregf`);
+
+--
+-- Indices de la tabla `statustragicos`
+--
+ALTER TABLE `statustragicos`
+  ADD PRIMARY KEY (`idstatus`,`idsiniestro`),
+  ADD KEY `fk_statustragicos` (`idsiniestro`);
+
+--
+-- Indices de la tabla `tragico`
+--
+ALTER TABLE `tragico`
+  ADD PRIMARY KEY (`idmovint`),
+  ADD KEY `fk_analista` (`analista`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`idusuario`),
+  ADD UNIQUE KEY `login_UNIQUE` (`login`);
+
+--
+-- Indices de la tabla `usuario_permiso`
+--
+ALTER TABLE `usuario_permiso`
+  ADD PRIMARY KEY (`idusuario_permiso`),
+  ADD KEY `fk_usuario_permiso_permiso_idx` (`idpermiso`),
+  ADD KEY `fk_usuario_permiso_usuario_idx` (`idusuario`);
+
+--
+-- Indices de la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD PRIMARY KEY (`idventa`),
+  ADD KEY `fk_venta_persona_idx` (`idcliente`),
+  ADD KEY `fk_venta_usuario_idx` (`idusuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `articulo`
+--
+ALTER TABLE `articulo`
+  MODIFY `idarticulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `aseguradora`
+--
+ALTER TABLE `aseguradora`
+  MODIFY `idseguradora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `categoria`
+--
+ALTER TABLE `categoria`
+  MODIFY `idcategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_ingreso`
+--
+ALTER TABLE `detalle_ingreso`
+  MODIFY `iddetalle_ingreso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  MODIFY `iddetalle_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `ingreso`
+--
+ALTER TABLE `ingreso`
+  MODIFY `idingreso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `permiso`
+--
+ALTER TABLE `permiso`
+  MODIFY `idpermiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `persona`
+--
+ALTER TABLE `persona`
+  MODIFY `idpersona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `regimenfiscal`
+--
+ALTER TABLE `regimenfiscal`
+  MODIFY `idregf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `statustragicos`
+--
+ALTER TABLE `statustragicos`
+  MODIFY `idstatus` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=670;
+
+--
+-- AUTO_INCREMENT de la tabla `tragico`
+--
+ALTER TABLE `tragico`
+  MODIFY `idmovint` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=670;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `idusuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario_permiso`
+--
+ALTER TABLE `usuario_permiso`
+  MODIFY `idusuario_permiso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=279;
+
+--
+-- AUTO_INCREMENT de la tabla `venta`
+--
+ALTER TABLE `venta`
+  MODIFY `idventa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `articulo`
+--
+ALTER TABLE `articulo`
+  ADD CONSTRAINT `fk_articulo_categoria` FOREIGN KEY (`idcategoria`) REFERENCES `categoria` (`idcategoria`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `detalle_ingreso`
+--
+ALTER TABLE `detalle_ingreso`
+  ADD CONSTRAINT `fk_detalle_ingreso_articulo` FOREIGN KEY (`idarticulo`) REFERENCES `articulo` (`idarticulo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_detalle_ingreso_ingreso` FOREIGN KEY (`idingreso`) REFERENCES `ingreso` (`idingreso`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  ADD CONSTRAINT `fk_detalle_venta_articulo` FOREIGN KEY (`idarticulo`) REFERENCES `articulo` (`idarticulo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_detalle_venta_venta` FOREIGN KEY (`idventa`) REFERENCES `venta` (`idventa`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `ingreso`
+--
+ALTER TABLE `ingreso`
+  ADD CONSTRAINT `fk_ingreso_persona` FOREIGN KEY (`idproveedor`) REFERENCES `persona` (`idpersona`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_ingreso_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `statustragicos`
+--
+ALTER TABLE `statustragicos`
+  ADD CONSTRAINT `fk_statustragicos` FOREIGN KEY (`idsiniestro`) REFERENCES `tragico` (`idmovint`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `tragico`
+--
+ALTER TABLE `tragico`
+  ADD CONSTRAINT `fk_analista` FOREIGN KEY (`analista`) REFERENCES `usuario` (`idusuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `usuario_permiso`
+--
+ALTER TABLE `usuario_permiso`
+  ADD CONSTRAINT `fk_usuario_permiso_permiso` FOREIGN KEY (`idpermiso`) REFERENCES `permiso` (`idpermiso`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_usuario_permiso_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD CONSTRAINT `fk_venta_persona` FOREIGN KEY (`idcliente`) REFERENCES `persona` (`idpersona`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_venta_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

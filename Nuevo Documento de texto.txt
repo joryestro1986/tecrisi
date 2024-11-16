@@ -1,0 +1,15 @@
+punto 1
+	1 SELECIONAR EL SINIESTRO
+	2 ingresas el MONTO del siniestro x siniestro.
+	3 se guarda la información anexada
+  
+  
+paso 2 Cxcobrar
+	2.1 debes de seleccionar la aseguradora,
+				ingresas forma de pago, fecha pago, referencia, banco, concepto, importe
+	2.2 cuando ingreses el paso anterior al rellenar los campos te debe de desplegar una lista de los siniestros que la aseguradora de los que debe mayor a cero
+	2.3 en la lista que te muestra escribir la cantidad del monto a cubrir por cada siniestro de acuerdo 
+	2.4 muestre el siniestro, el importeMontoDoc, debe, importe a ingresar
+	2.5 que no debe de pasar de la cantidad del importe depositado al ingresas en el punto 2.3 no se pase.
+	2.6 es guarde todo..
+  

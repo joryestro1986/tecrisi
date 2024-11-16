@@ -95,6 +95,7 @@ function guardaryeditar(e)
 	var formData = new FormData($("#formulario")[0]);
 
 	$.ajax({
+		
 		url: "../ajax/aseguradora.php?op=guardaryeditar",
 	    type: "POST",
 	    data: formData,
